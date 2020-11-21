@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+import { Schema, model } from 'mongoose'
 
 const taskScheme = new Schema({
   title: String,
@@ -13,5 +12,4 @@ const taskScheme = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-const Task = mongoose.model('Task', taskScheme)
-module.exports = Task
+export const Task = model('Task', taskScheme)

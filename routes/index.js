@@ -1,7 +1,9 @@
-const express = require('express')
-const router = express.Router()
-router.use(require('./users'))
+import { Router } from 'express'
+import users from './users'
 
-module.exports = function (app) {
+const router = Router()
+router.use(users)
+
+export default function (app) {
   app.use('/services', router)
 }

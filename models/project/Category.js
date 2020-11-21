@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+import { Schema, model } from 'mongoose'
 
 const shema = new Schema({
   title: String,
@@ -10,5 +9,4 @@ const shema = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-const Category = mongoose.model('Category', shema)
-module.exports = Category
+export const Category = model('Category', shema)

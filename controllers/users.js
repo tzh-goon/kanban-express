@@ -1,21 +1,21 @@
-const { User } = require('../models/index')
+import { User } from '../models'
 
-module.exports.createUser = function (user) {
+export function createUser(user) {
   return User.create(user)
 }
 
-module.exports.getUserById = function (id) {
+export function getUserById(id) {
   return User.findById(id).exec()
 }
 
-module.exports.updateUser = function (id, fields) {
+export function updateUser(id, fields) {
   return User.findByIdAndUpdate(id, fields, { new: true }).exec()
 }
 
-module.exports.deleteUser = function (id) {
+export function deleteUser(id) {
   return User.findByIdAndDelete(id).exec()
 }
 
-module.exports.getAllUsers = function () {
+export function getAllUsers() {
   return User.find({}).exec()
 }

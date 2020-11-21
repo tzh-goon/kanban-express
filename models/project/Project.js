@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+import { Schema, model } from 'mongoose'
 
 const projectScheme = new Schema({
   title: String,
@@ -10,5 +9,4 @@ const projectScheme = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-const Project = mongoose.model('Project', projectScheme)
-module.exports = Project
+export const Project = model('Project', projectScheme)

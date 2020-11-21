@@ -1,4 +1,2 @@
-module.exports = {
-  User: require('./user/User'),
-  UserAuth: require('./user/UserAuth')
-}
+export * from './user/User'
+export * from './user/UserAuth'

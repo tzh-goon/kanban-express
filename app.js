@@ -1,19 +1,21 @@
-const express = require('express')
-const logger = require('morgan')
-const helmet = require('helmet')
-const CreateError = require('http-errors')
-const config = require('config-lite')({
+import express, { json, urlencoded } from 'express'
+import logger from 'morgan'
+import helmet from 'helmet'
+import CreateError from 'http-errors'
+import configLite from 'config-lite'
+import dbConnect from './mongodb/index'
+import router from './routes/index'
+
+const config = configLite({
   config_basedir: __dirname,
   config_dir: 'config'
 })
-const dbConnect = require('./mongodb/index')
-const router = require('./routes/index')
 
 const app = express()
 dbConnect()
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(json())
+app.use(urlencoded({ extended: false }))
 app.use(logger('tiny'))
 app.use(helmet())
 
@@ -39,4 +41,4 @@ const server = app.listen(config.port, function () {
   console.log('应用实例，访问地址为 http://localhost:%s', port)
 })
 
-module.exports = app
+export default app

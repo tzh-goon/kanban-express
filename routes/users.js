@@ -1,19 +1,17 @@
-const express = require('express')
-const users = require('../controllers/users')
-const router = express.Router()
+import { Router } from 'express'
+import { getUserById, createUser, updateUser, deleteUser, getAllUsers } from '../controllers/users'
+const router = Router()
 
 router.get('/user/:id', function (req, res, next) {
   const id = req.params.id
-  users
-    .getUserById(id)
+  getUserById(id)
     .then(e => res.json(e))
     .catch(next)
 })
 
 router.post('/user', function (req, res, next) {
   const user = req.body
-  users
-    .createUser(user)
+  createUser(user)
     .then(e => res.json(e))
     .catch(next)
 })
@@ -21,25 +19,22 @@ router.post('/user', function (req, res, next) {
 router.put('/user/:id', function (req, res, next) {
   const id = req.params.id
   const data = req.body
-  users
-    .updateUser(id, data)
+  updateUser(id, data)
     .then(e => res.json(e))
     .catch(next)
 })
 
 router.delete('/user/:id', function (req, res, next) {
   const id = req.params.id
-  users
-    .deleteUser(id)
+  deleteUser(id)
     .then(e => res.json(e))
     .catch(next)
 })
 
 router.get('/users/all', function (req, res, next) {
-  users
-    .getAllUsers()
+  getAllUsers()
     .then(e => res.json(e))
     .catch(next)
 })
 
-module.exports = router
+export default router

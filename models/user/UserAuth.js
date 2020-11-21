@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+import { Schema, model } from 'mongoose'
 
 const schema = new Schema({
   identifier: String, // 唯一标识
@@ -9,5 +8,4 @@ const schema = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-const UserAuth = mongoose.model('UserAuth', schema)
-module.exports = UserAuth
+export const UserAuth = model('UserAuth', schema)
