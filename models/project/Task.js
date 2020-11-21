@@ -7,11 +7,11 @@ const taskScheme = new Schema({
   priority: String,
   beginTime: Date,
   endTime: Date,
-  projectId: { type: Schema.Types.ObjectId, ref="Project" },
-  categoryId: { type: Schema.Types.ObjectId, ref="Category" },
-  ownerId: { type: Schema.Types.ObjectId, ref="User" },
+  projectId: { type: Schema.Types.ObjectId, ref: 'Project' },
+  categoryId: { type: Schema.Types.ObjectId, ref: 'Category' },
+  ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
 const Task = mongoose.model('Task', taskScheme)
-module.exports = Task;
+module.exports = Task

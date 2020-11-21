@@ -1,13 +1,12 @@
 const express = require('express')
-const mongoose = require('mongoose')
 const logger = require('morgan')
 const helmet = require('helmet')
-const createError = require('http-errors')
-const dbConnect = require('./mongodb/index')
+const CreateError = require('http-errors')
 const config = require('config-lite')({
   config_basedir: __dirname,
   config_dir: 'config'
 })
+const dbConnect = require('./mongodb/index')
 const router = require('./routes/index')
 
 const app = express()
@@ -16,7 +15,7 @@ dbConnect()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(logger('tiny'))
-// app.use(helmet())
+app.use(helmet())
 
 app.get('/', (req, res) => {
   res.send('hello !')
@@ -26,12 +25,13 @@ router(app)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(new createError.NotFound())
+  next(new CreateError(404))
 })
 
 // error handler
 app.use(function (err, req, res, next) {
-  next(new createError(500));
+  console.log(err)
+  next(new CreateError(500))
 })
 
 const server = app.listen(config.port, function () {

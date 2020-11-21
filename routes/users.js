@@ -1,45 +1,31 @@
 const express = require('express')
-const User = require('../models/common/User')
+const users = require('../controllers/users')
 const router = express.Router()
 
 router.get('/user/:id', function (req, res, next) {
   const id = req.params.id
-  User.findById(id, (err, doc) => {
-    if (err) next(err)
-    else res.json(doc)
-  })
+  users.getUserById(id).then(res.json).catch(next)
 })
 
 router.post('/user', function (req, res, next) {
   const user = req.body
-  User.create(user, (err, doc) => {
-    if (err) next(err)
-    else res.json(doc)
-  })
+  users.createUser(user).then(res.json).catch(next)
 })
 
 router.put('/user/:id', function (req, res, next) {
   const id = req.params.id
   const data = req.body
-  User.findByIdAndUpdate(id, data, { new: true }, (err, doc) => {
-    if (err) next(err)
-    else res.json(doc)
-  })
+  users.updateUser(id, data).then(res.json).catch(next)
 })
 
 router.delete('/user/:id', function (req, res, next) {
   const id = req.params.id
-  User.findByIdAndDelete(id, (err, doc) => {
-    if (err) next(err)
-    else res.json(doc)
-  })
+  users.deleteUser(id).then(res.json).catch(next)
 })
 
 router.get('/users/all', function (req, res, next) {
-  User.find({}, (err, doc) => {
-    if (err) next(err)
-    else res.json(doc)
-  })
+  console.log('all???')
+  users.getAllUsers().then(res.json).catch(next)
 })
 
 module.exports = router
