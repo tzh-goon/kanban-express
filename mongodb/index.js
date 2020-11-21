@@ -1,28 +1,24 @@
-const mongoose = require('mongoose')
-const config = require('config-lite')({
-  config_basedir: __dirname,
-  config_dir: 'config'
-})
+import { connection, connect } from 'mongoose'
+import config from '../utils/config'
 
-const db = mongoose.connection
 const dbConnect = () => {
-  mongoose.connect(config.mongodbUrl, {
+  connect(config.mongodbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
   })
 
-  db.on('connected', () => {
+  connection.on('connected', () => {
     console.log('MoogoDB connect success')
   })
 
-  db.on('error', err => {
+  connection.on('error', err => {
     console.log('MoogoDB connect fail ' + err)
   })
 
-  db.on('disconnected', () => {
+  connection.on('disconnected', () => {
     console.log('MoogoDB connect disconnected')
   })
 }
 
-module.exports = dbConnect
+export default dbConnect

@@ -2,14 +2,9 @@ import express, { json, urlencoded } from 'express'
 import logger from 'morgan'
 import expressJwt from 'express-jwt'
 import CreateError from 'http-errors'
-import configLite from 'config-lite'
 import dbConnect from './mongodb/index'
 import router from './routes/index'
-
-const config = configLite({
-  config_basedir: __dirname,
-  config_dir: 'config'
-})
+import config from './utils/config'
 
 const app = express()
 dbConnect()
@@ -19,7 +14,7 @@ app.use(urlencoded({ extended: false }))
 app.use(logger('tiny'))
 app.use(
   expressJwt({
-    secret: config.jwt.secret,
+    secret: config.jwtSecret,
     algorithms: ['RS256']
   }).unless({
     path: ['/login', '/signup']
