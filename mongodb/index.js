@@ -8,7 +8,8 @@ const db = mongoose.connection
 const dbConnect = () => {
   mongoose.connect(config.mongodbUrl, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
   })
 
   db.on('connected', () => {
