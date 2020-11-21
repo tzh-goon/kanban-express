@@ -1,6 +1,6 @@
 import express, { json, urlencoded } from 'express'
 import logger from 'morgan'
-import helmet from 'helmet'
+import expressJwt from 'express-jwt'
 import CreateError from 'http-errors'
 import configLite from 'config-lite'
 import dbConnect from './mongodb/index'
@@ -17,11 +17,14 @@ dbConnect()
 app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(logger('tiny'))
-app.use(helmet())
-
-app.get('/', (req, res) => {
-  res.send('hello !')
-})
+app.use(
+  expressJwt({
+    secret: config.jwt.secret,
+    algorithms: ['RS256']
+  }).unless({
+    path: ['/login', '/signup']
+  })
+)
 
 router(app)
 
