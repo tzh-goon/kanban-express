@@ -1,5 +1,6 @@
 import express, { json, urlencoded } from 'express'
 import logger from 'morgan'
+import compression from 'compression'
 import expressJwt from 'express-jwt'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
@@ -12,12 +13,13 @@ dbConnect()
 app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(logger('tiny'))
+app.use(compression())
 app.use(
   expressJwt({
     secret: config.JWT_SECRET,
     algorithms: ['RS256']
   }).unless({
-    path: ['/login', '/signup']
+    path: [/\/services\/login/]
   })
 )
 
