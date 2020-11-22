@@ -1,2 +1,2 @@
-export * from './user/User'
-export * from './user/UserAuth'
+export * from './user'
+export * from './project'

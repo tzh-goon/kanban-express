@@ -2,7 +2,7 @@ import { connection, connect } from 'mongoose'
 import config from '../utils/config'
 
 const dbConnect = () => {
-  connect(config.mongodbUrl, {
+  connect(config.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false

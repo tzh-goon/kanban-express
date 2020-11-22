@@ -6,6 +6,7 @@
     "dev": "cross-env NODE_ENV=development nodemon --harmony index.js"
   },
   "dependencies": {
+    "axios": "^0.21.0",
     "babel-polyfill": "^6.26.0",
     "config-lite": "^3.0.0",
     "cookie-parser": "~1.4.4",
@@ -16,8 +17,7 @@
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.15",
-    "morgan": "~1.9.1",
-    "request": "^2.88.2"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -1,9 +1,5 @@
-import { Router } from 'express'
-import users from './users'
-
-const router = Router()
-router.use(users)
+import userRouter from './user'
 
 export default function (app) {
-  app.use('/services', router)
+  app.use('/services', userRouter)
 }
