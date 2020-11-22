@@ -5,7 +5,7 @@ import expressJwt from 'express-jwt'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
 import router from './routes/index'
-import config from './utils/config'
+import { sendErrorResp, config } from './utils'
 
 const app = express()
 dbConnect()
@@ -32,18 +32,12 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.log('error handler')
-  console.log(err)
-  console.log(err.name)
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send('')
+    sendErrorResp(res, 401, '100001', '未授权')
     return
   }
-  if (err.name === 'HttpError') {
-    res.status(err.status)
-    return
-  }
-  next(new CreateHttpError(500, err))
+  const error = new CreateHttpError(err.statusCode || 500, err)
+  sendErrorResp(res, error.statusCode, '100002', error.message)
 })
 
 const server = app.listen(config.PORT, function () {
