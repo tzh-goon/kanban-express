@@ -6,6 +6,6 @@ import config from './config'
  * @param {Object} payload
  */
 export function generateToken(payload) {
-  const token = jwt.sign(payload, config.JWT_SECRET, { expiresIn: 24 * 60 * 60 })
+  const token = jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRES })
   return { accessToken: token }
 }

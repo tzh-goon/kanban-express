@@ -17,7 +17,7 @@ app.use(compression())
 app.use(
   expressJwt({
     secret: config.JWT_SECRET,
-    algorithms: ['RS256']
+    algorithms: ['HS256']
   }).unless({
     path: [/\/services\/login/]
   })
