@@ -5,7 +5,7 @@ import expressJwt from 'express-jwt'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
 import router from './routes/index'
-import { sendErrorResp, config } from './utils'
+import { config, sendErrorResp } from './utils'
 
 const app = express()
 dbConnect()

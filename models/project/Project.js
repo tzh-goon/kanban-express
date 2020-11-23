@@ -5,7 +5,8 @@ const projectScheme = new Schema({
   description: String,
   imageUrl: String,
   type: String,
-  ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
+  categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
