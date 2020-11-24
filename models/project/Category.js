@@ -4,6 +4,7 @@ const shema = new Schema({
   title: String,
   description: String,
   type: String,
+  delete: Boolean,
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },

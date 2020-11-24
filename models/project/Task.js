@@ -6,6 +6,7 @@ const taskScheme = new Schema({
   priority: String,
   beginTime: Date,
   endTime: Date,
+  delete: Boolean,
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   createdBy: { type: Schema.Types.ObjectId, ref: 'User' },

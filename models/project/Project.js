@@ -5,6 +5,7 @@ const projectScheme = new Schema({
   description: String,
   imageUrl: String,
   type: String,
+  delete: Boolean,
   categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
   createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   updateTime: { type: Date, default: Date.now },

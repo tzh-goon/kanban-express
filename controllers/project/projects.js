@@ -36,10 +36,10 @@ export function getProjectByUserId(ownerId) {
  */
 export async function deleteProjectRelated(id) {
   // 删除任务
-  await Task.deleteMany({ project: id })
+  await Task.update({ project: id }, { delete: true })
   // 删除分类
-  await Category.deleteMany({ project: id })
+  await Category.update({ project: id }, { delete: true })
   // 删除项目
-  await Project.deleteOne({ _id: id })
+  await Project.update({ _id: id }, { delete: true })
   return null
 }
