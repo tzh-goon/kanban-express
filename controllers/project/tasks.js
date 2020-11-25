@@ -1,6 +1,8 @@
+import assert from 'assert'
+import { sendResp } from '../../utils'
 import { Task, Category } from '../../models'
 
-export function addTaskToCategory(taskId, categoryId) {
+function addTaskToCategory(taskId, categoryId) {
   return Category.updateOne(
     { _id: categoryId },
     {
@@ -9,7 +11,7 @@ export function addTaskToCategory(taskId, categoryId) {
   ).exec()
 }
 
-export function removeTaskFromCategory(taskId, categoryId) {
+function removeTaskFromCategory(taskId, categoryId) {
   return Category.updateOne(
     { _id: categoryId },
     {
@@ -18,25 +20,31 @@ export function removeTaskFromCategory(taskId, categoryId) {
   ).exec()
 }
 
-export async function createTask(fields) {
+export async function createTask(req, res, next) {
+  const fields = req.body
+  assert.ok(!!fields.project, 'project 不能为空')
+  assert.ok(!!fields.category, 'category 不能为空')
   const task = await Task.create(fields)
   await addTaskToCategory(task.id, task.category)
-  return task
+  sendResp(res, task)
 }
 
-export async function deleteTask(id) {
+export async function deleteTask(req, res, next) {
+  const id = req.params.id
   const task = await Task.updateOne({ _id: id }, { delete: true })
   await removeTaskFromCategory(id, task.category)
+  sendResp(res, null)
 }
 
-export function getTaskById(id) {
-  return Task.findById(id).exec()
+export async function getTaskById(req, res, next) {
+  const id = req.params.id
+  const task = await Task.findById(id).exec()
+  sendResp(res, task)
 }
 
-export function updateTask(id, fields) {
-  return Task.findByIdAndUpdate(id, fields, { new: true }).exec()
-}
-
-export function getAllTasks() {
-  return Task.find({}).exec()
+export async function updateTask(req, res, next) {
+  const id = req.params.id
+  const fields = req.body
+  const task = await Task.findByIdAndUpdate(id, fields, { new: true }).exec()
+  sendResp(res, task)
 }

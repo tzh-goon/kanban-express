@@ -1,13 +1,15 @@
+import assert from 'assert'
 import got from 'got'
 import config from '../../utils/config'
 import { User, UserAuth } from '../../models'
 import { generateToken } from '../../utils/token'
+import { sendResp } from '../../utils'
 
 /**
  * 获取微信授权信息
  * @param {String} code
  */
-export async function getSessionByJsCode(code) {
+async function getSessionByJsCode(code) {
   const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${config.WECHAT_APP_ID}&secret=${config.WECHAT_APP_SECRET}&js_code=${code}&grant_type=authorization_code`
   const response = await got.get(url, { responseType: 'json' })
   return {
@@ -21,7 +23,7 @@ export async function getSessionByJsCode(code) {
  * @param {String} type
  * @param {String} id
  */
-export async function getUserAuth(option) {
+async function getUserAuth(option) {
   const userAuth = await UserAuth.findOne(option).exec()
   if (!userAuth) return null
   const user = await User.findById(userAuth.userId).exec()
@@ -32,7 +34,7 @@ export async function getUserAuth(option) {
  * 微信注册
  * @param {Object} info 微信用户基本信息
  */
-export async function createUserAuth(sessionKey, openId, info) {
+async function createUserAuth(sessionKey, openId, info) {
   const { nickName, avatarUrl } = info
   // 创建新用户
   const user = await User.create({
@@ -52,14 +54,19 @@ export async function createUserAuth(sessionKey, openId, info) {
 
 /**
  * 微信授权登录，自动注册
- * @param {String} code 微信授权code
- * @param {Object} userinfo 微信授权信息
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
  */
-export async function loginByWechatMiniProgram(code, userinfo) {
+export async function loginByWechatMiniProgram(req, res, next) {
+  const { code, ...userFields } = req.body
+  assert.ok(!!code, 'code 不能为空')
+
   const { sessionKey, openId } = await getSessionByJsCode(code)
   let user = await getUserAuth({ identifier: openId, identityType: 'wechat' })
   if (!user) {
-    user = await createUserAuth(sessionKey, openId, userinfo)
+    user = await createUserAuth(sessionKey, openId, userFields)
   }
-  return generateToken({ userId: user.id })
+  const token = generateToken({ userId: user.id })
+  sendResp(res, token)
 }

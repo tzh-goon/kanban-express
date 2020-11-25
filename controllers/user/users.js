@@ -1,21 +1,27 @@
 import { User } from '../../models'
+import { sendResp } from '../../utils'
 
-export function createUser(user) {
-  return User.create(user)
+export async function createUser(req, res, next) {
+  const fields = req.body
+  const user = await User.create(fields)
+  sendResp(res, user)
 }
 
-export function getUserById(id) {
-  return User.findById(id).exec()
+export async function getUserById(req, res, next) {
+  const id = req.params.id
+  const user = await User.findById(id).exec()
+  sendResp(res, user)
 }
 
-export function updateUser(id, fields) {
-  return User.findByIdAndUpdate(id, fields, { new: true }).exec()
+export async function updateUser(req, res, next) {
+  const id = req.params.id
+  const fields = req.body
+  const user = await User.findByIdAndUpdate(id, fields, { new: true }).exec()
+  sendResp(res, user)
 }
 
-export function deleteUser(id) {
-  return User.findByIdAndDelete(id).exec()
-}
-
-export function getAllUsers() {
-  return User.find({}).exec()
+export async function deleteUser(req, res, next) {
+  const id = req.params.id
+  await User.findByIdAndDelete(id).exec()
+  sendResp(res, null)
 }

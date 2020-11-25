@@ -36,8 +36,8 @@ app.use(function (err, req, res, next) {
     sendErrorResp(res, 401, '100001', '未授权')
     return
   }
-  const error = new CreateHttpError(err.statusCode || 500, err)
-  sendErrorResp(res, error.statusCode, '100002', error.message)
+  const error = new CreateHttpError(err.statusCode || 400, err)
+  sendErrorResp(res, error.statusCode, null, error.message)
 })
 
 const server = app.listen(config.PORT, function () {

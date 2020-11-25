@@ -1,6 +1,8 @@
+import assert from 'assert'
 import { Category, Task } from '../../models'
+import { sendResp } from '../../utils'
 
-export function addCategoryToProject(categoryId, projectId, index) {
+function addCategoryToProject(categoryId, projectId, index) {
   return Category.updateOne(
     { _id: projectId },
     {
@@ -9,7 +11,7 @@ export function addCategoryToProject(categoryId, projectId, index) {
   ).exec()
 }
 
-export function removeCategoryFromProject(categoryId, projectId) {
+function removeCategoryFromProject(categoryId, projectId) {
   return Category.updateOne(
     { _id: projectId },
     {
@@ -18,26 +20,31 @@ export function removeCategoryFromProject(categoryId, projectId) {
   ).exec()
 }
 
-export async function createCategory(val, index) {
-  const category = await Category.create(val)
+export async function createCategory(req, res, next) {
+  const { index, ...fields } = req.body
+  assert.ok(!!fields.project, 'project 不能为空')
+  const category = await Category.create(fields)
   await addCategoryToProject(category.id, category.project, index)
-  return category
+  sendResp(res, category)
 }
 
-export function getCategoryById(id) {
-  return Category.findById(id).exec()
+export async function getCategoryById(req, res, next) {
+  const id = req.params.id
+  const category = await Category.findById(id).exec()
+  sendResp(res, category)
 }
 
-export function updateCategory(id, fields) {
-  return Category.findByIdAndUpdate(id, fields, { new: true }).exec()
+export async function updateCategory(req, res, next) {
+  const id = req.params.id
+  const fields = req.body
+  const category = await Category.findByIdAndUpdate(id, fields, { new: true }).exec()
+  sendResp(res, category)
 }
 
-export async function deleteCategory(id) {
+export async function deleteCategory(req, res, next) {
+  const id = req.params.id
   const category = await Category.updateOne({ _id: id }, { delete: true })
   await Task.update({}, { _id: { $in: category.tasks } }, { delete: true })
   await removeCategoryFromProject(id, category.project)
-}
-
-export function getAllCategorys() {
-  return Category.find({}).exec()
+  sendResp(res, null)
 }

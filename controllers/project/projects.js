@@ -1,45 +1,47 @@
 import { Category, Project, Task } from '../../models'
+import { sendResp } from '../../utils'
 
-export function createProject(project) {
-  return Project.create(project)
+export async function createProject(req, res, next) {
+  const fields = req.body
+  const project = await Project.create(fields)
+  sendResp(res, project)
 }
 
-export function getProjectById(id) {
-  return Project.findById(id).exec()
+export async function getProjectById(req, res, next) {
+  const id = req.params.id
+  const project = await Project.findById(id).exec()
+  sendResp(res, project)
 }
 
-export function updateProject(id, fields) {
-  return Project.findByIdAndUpdate(id, fields, { new: true }).exec()
+export async function updateProject(req, res, next) {
+  const id = req.params.id
+  const fields = req.body
+  const project = await Project.findByIdAndUpdate(id, fields, { new: true }).exec()
+  sendResp(res, project)
 }
 
-export function deleteProject(id) {
-  return Project.findByIdAndDelete(id).exec()
-}
-
-export function getAllProjects() {
-  return Project.find({}).exec()
-}
-
-export function getProjectByUserId(ownerId) {
-  return Project.findOne({ ownerId }) //
+export async function getProjectByUserId(req, res, next) {
+  const ownerId = req.user.id
+  const project = await Project.findOne({ ownerId }) //
     .populate({
       path: 'categories',
       populate: {
         path: 'tasks'
       }
     })
+  sendResp(res, project)
 }
 
 /**
  * 删除项目及其关联
- * @param {String} id
  */
-export async function deleteProjectRelated(id) {
+export async function deleteProject(req, res, next) {
+  const id = req.params.id
   // 删除任务
   await Task.update({ project: id }, { delete: true })
   // 删除分类
   await Category.update({ project: id }, { delete: true })
   // 删除项目
   await Project.update({ _id: id }, { delete: true })
-  return null
+  sendResp(res, null)
 }
