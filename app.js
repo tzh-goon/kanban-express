@@ -4,11 +4,12 @@ import compression from 'compression'
 import expressJwt from 'express-jwt'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
-import router from './routes/index'
-import { config, sendErrorResp } from './utils'
+import router from '@/Routes'
+import { config, sendErrorResp } from '@/Utils'
+
+dbConnect()
 
 const app = express()
-dbConnect()
 
 app.use(json())
 app.use(urlencoded({ extended: false }))

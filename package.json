@@ -19,6 +19,7 @@
     "got": "^11.8.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "mongoose": "^5.10.15",
     "morgan": "~1.9.1"
   },
@@ -36,8 +37,13 @@
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
-    "module-alias": "^2.2.2",
     "nodemon": "^2.0.6",
     "prettier": "^2.0.4"
+  },
+  "_moduleAliases": {
+    "@/Models": "models",
+    "@/Controllers": "controllers",
+    "@/Routes": "routes",
+    "@/Utils": "utils"
   }
 }

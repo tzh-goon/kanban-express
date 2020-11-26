@@ -4,7 +4,7 @@
     "paths": {
       "@/Models": ["models"],
       "@/Controllers": ["controllers"],
-      "@/Routers": ["routers"],
+      "@/Routes": ["routes"],
       "@/Utils": ["utils"]
     }
   }
