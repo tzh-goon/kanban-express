@@ -30,14 +30,13 @@ async function getUserAuth(option) {
 
 /**
  * 微信注册
- * @param {Object} info 微信用户基本信息
+ * @param {Object} fields 微信用户基本信息
  */
-async function createUserAuth(sessionKey, openId, info) {
-  const { nickName, avatarUrl } = info
+async function createUserAuth(sessionKey, openId, fields) {
+  const { nickName, avatarUrl } = fields
   // 创建新用户
   const user = await User.create({
     userName: nickName,
-    displayName: nickName,
     avatar: avatarUrl
   })
   // 创建新授权方式
@@ -51,17 +50,16 @@ async function createUserAuth(sessionKey, openId, info) {
 }
 
 /**
- * 微信授权登录，自动注册
- * @route GET /api
- * @group foo - Operations about user
- * @param {string} email.query.required - username or email - eg: user@domain
- * @param {string} password.query.required - user's password.
- * @returns {object} 200 - An array of user info
- * @returns {Error}  default - Unexpected error
- * @security JWT
+ * @route POST /login/login_by_wechat_mini_program
+ * @group login - 登录
+ * @summary - 微信授权登录且自动注册
+ * @param {object} fields.body.required {"userName": "", "imageUrl": ""}
+ * @param {string} code.query.required 微信授权码（js_code）
+ * @returns {object} 200 授权信息
  */
 export async function loginByWechatMiniProgram(req, res, next) {
-  const { code, ...userFields } = req.body
+  const code = req.query.code
+  const userFields = req.body
   assert.ok(!!code, 'code 不能为空')
 
   const { sessionKey, openId } = await getSessionByJsCode(code)

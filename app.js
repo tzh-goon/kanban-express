@@ -12,7 +12,6 @@ dbConnect()
 
 const app = express()
 
-
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
@@ -20,8 +19,8 @@ const swaggerOptions = {
       title: 'Swagger',
       version: '1.0.0'
     },
-    host: 'localhost:3000',
-    basePath: '/v1',
+    host: `localhost:${config.PORT}`,
+    basePath: '/services',
     produces: ['application/json', 'application/xml'],
     schemes: ['http', 'https'],
     securityDefinitions: {
@@ -38,7 +37,7 @@ const swaggerOptions = {
     docs: '/swagger.json' // swagger文件 api
   },
   basedir: __dirname, // app absolute path
-  files: ['./controllers/**/*.js'] // Path to the API handle folder
+  files: ['./models/**/*.js', './controllers/**/*.js'] // Path to the API handle folder
 }
 expressSwaggerGenerator(app)(swaggerOptions)
 

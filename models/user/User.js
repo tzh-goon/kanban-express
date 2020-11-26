@@ -2,13 +2,16 @@ import { Schema, model } from 'mongoose'
 
 const userSchema = new Schema({
   userName: String,
-  displayName: String,
-  gender: String,
   avatar: String,
-  birthday: Date,
   mobile: String,
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
 
+/**
+ * @typedef User
+ * @property {string} _id - 唯一id
+ * @property {string} userName.required - 用户名
+ * @property {string} avatar - 头像
+ */
 export const User = model('User', userSchema)
