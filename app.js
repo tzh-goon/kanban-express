@@ -12,6 +12,35 @@ dbConnect()
 
 const app = express()
 
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      description: 'This is a sample server',
+      title: 'Swagger',
+      version: '1.0.0'
+    },
+    host: 'localhost:3000',
+    basePath: '/v1',
+    produces: ['application/json', 'application/xml'],
+    schemes: ['http', 'https'],
+    securityDefinitions: {
+      JWT: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'Authorization',
+        description: ''
+      }
+    }
+  },
+  route: {
+    url: '/swagger',
+    docs: '/swagger.json' // swagger文件 api
+  },
+  basedir: __dirname, // app absolute path
+  files: ['./controllers/**/*.js'] // Path to the API handle folder
+}
+expressSwaggerGenerator(app)(swaggerOptions)
+
 app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(logger('tiny'))
@@ -41,35 +70,6 @@ app.use(function (err, req, res, next) {
   const error = new CreateHttpError(err.statusCode || 400, err)
   sendErrorResp(res, error.statusCode, null, error.message)
 })
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    info: {
-      description: 'This is a sample server',
-      title: 'Swagger',
-      version: '1.0.0'
-    },
-    host: 'localhost:3000',
-    basePath: '/v1',
-    produces: ['application/json', 'application/xml'],
-    schemes: ['http', 'https'],
-    securityDefinitions: {
-      JWT: {
-        type: 'apiKey',
-        in: 'header',
-        name: 'Authorization',
-        description: ''
-      }
-    }
-  },
-  route: {
-    url: '/swagger',
-    docs: '/swagger.json' // swagger文件 api
-  },
-  basedir: __dirname, // app absolute path
-  files: ['./controllers/**/*.js'] // Path to the API handle folder
-}
-expressSwaggerGenerator(app)(swaggerOptions)
 
 app.listen(config.PORT)
 
