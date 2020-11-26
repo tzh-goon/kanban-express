@@ -37,6 +37,7 @@
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
+    "express-swagger-generator": "^1.1.17",
     "nodemon": "^2.0.6",
     "prettier": "^2.0.4"
   },

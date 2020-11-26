@@ -2,6 +2,7 @@ import express, { json, urlencoded } from 'express'
 import logger from 'morgan'
 import compression from 'compression'
 import expressJwt from 'express-jwt'
+import expressSwaggerGenerator from 'express-swagger-generator'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
 import router from '@/Routes'
@@ -20,7 +21,7 @@ app.use(
     secret: config.JWT_SECRET,
     algorithms: ['HS256']
   }).unless({
-    path: [/\/services\/login/]
+    path: [/\/services\/login/, /\/api-docs/]
   })
 )
 
@@ -41,9 +42,35 @@ app.use(function (err, req, res, next) {
   sendErrorResp(res, error.statusCode, null, error.message)
 })
 
-const server = app.listen(config.PORT, function () {
-  const port = server.address().port
-  console.log('应用实例，访问地址为 http://localhost:%s', port)
-})
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      description: 'This is a sample server',
+      title: 'Swagger',
+      version: '1.0.0'
+    },
+    host: 'localhost:3000',
+    basePath: '/v1',
+    produces: ['application/json', 'application/xml'],
+    schemes: ['http', 'https'],
+    securityDefinitions: {
+      JWT: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'Authorization',
+        description: ''
+      }
+    }
+  },
+  route: {
+    url: '/swagger',
+    docs: '/swagger.json' // swagger文件 api
+  },
+  basedir: __dirname, // app absolute path
+  files: ['./controllers/**/*.js'] // Path to the API handle folder
+}
+expressSwaggerGenerator(app)(swaggerOptions)
+
+app.listen(config.PORT)
 
 export default app
