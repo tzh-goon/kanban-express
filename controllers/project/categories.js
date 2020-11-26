@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { Category, Task } from '../../models'
-import { sendResp } from '../../utils'
+import { Category, Task } from '@/Models'
+import { sendResp } from '@/Utils'
 
 function addCategoryToProject(categoryId, projectId, index) {
   return Category.updateOne(

@@ -1,5 +1,5 @@
-import { User } from '../../models'
-import { sendResp } from '../../utils'
+import { User } from '@/Models'
+import { sendResp } from '@/Utils'
 
 export async function createUser(req, res, next) {
   const fields = req.body

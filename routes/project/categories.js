@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getCategoryById, createCategory, updateCategory, deleteCategory } from '../../controllers'
+import { getCategoryById, createCategory, updateCategory, deleteCategory } from '@/Controllers'
 
 const router = Router()
 router.post('/category', createCategory)

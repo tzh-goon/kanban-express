@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { tokenSupplyHandler } from '../utils'
+import { tokenSupplyHandler } from '@/Utils'
 import userRouter from './user'
 
 export default function (app) {

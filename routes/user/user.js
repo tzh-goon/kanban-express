@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getUserById, createUser, updateUser, deleteUser } from '../../controllers'
+import { getUserById, createUser, updateUser, deleteUser } from '@/Controllers'
 
 const router = Router()
 router.post('/', createUser)

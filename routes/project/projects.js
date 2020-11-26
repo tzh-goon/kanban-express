@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getProjectById, createProject, updateProject, deleteProject } from '../../controllers'
+import { getProjectById, createProject, updateProject, deleteProject } from '@/Controllers'
 
 const router = Router()
 router.post('/project', createProject)

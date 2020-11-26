@@ -1,5 +1,5 @@
-import { Category, Project, Task } from '../../models'
-import { sendResp } from '../../utils'
+import { Category, Project, Task } from '@/Models'
+import { sendResp } from '@/Utils'
 
 export async function createProject(req, res, next) {
   const fields = req.body

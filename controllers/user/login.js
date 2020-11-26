@@ -1,9 +1,7 @@
 import assert from 'assert'
 import got from 'got'
-import config from '../../utils/config'
-import { User, UserAuth } from '../../models'
-import { generateToken } from '../../utils/token'
-import { sendResp } from '../../utils'
+import { config, sendResp, generateToken } from '@/Utils'
+import { User, UserAuth } from '@/Models'
 
 /**
  * 获取微信授权信息
@@ -54,9 +52,13 @@ async function createUserAuth(sessionKey, openId, info) {
 
 /**
  * 微信授权登录，自动注册
- * @param {Object} req
- * @param {Object} res
- * @param {Function} next
+ * @route GET /api
+ * @group foo - Operations about user
+ * @param {string} email.query.required - username or email - eg: user@domain
+ * @param {string} password.query.required - user's password.
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ * @security JWT
  */
 export async function loginByWechatMiniProgram(req, res, next) {
   const { code, ...userFields } = req.body
