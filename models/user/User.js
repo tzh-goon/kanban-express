@@ -4,6 +4,7 @@ const userSchema = new Schema({
   userName: String,
   avatar: String,
   mobile: String,
+  delete: { type: Boolean, default: false },
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })

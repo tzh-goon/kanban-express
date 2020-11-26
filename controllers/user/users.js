@@ -1,5 +1,5 @@
 import { User } from '@/Models'
-import { sendResp } from '@/Utils'
+import { sendErrorResp, sendResp } from '@/Utils'
 
 /**
  * @route POST /user
@@ -25,8 +25,12 @@ export async function createUser(req, res, next) {
  */
 export async function getUserById(req, res, next) {
   const id = req.params.id
-  const user = await User.findById(id).exec()
-  sendResp(res, user)
+  const user = await User.findOne({ _id: id, delete: false }).exec()
+  if (user) {
+    sendResp(res, user)
+  } else {
+    sendErrorResp(res, 404, 'Not Found')
+  }
 }
 
 /**
