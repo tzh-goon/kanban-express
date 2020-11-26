@@ -1,5 +1,6 @@
+import assert from 'assert'
 import { User } from '@/Models'
-import { sendErrorResp, sendResp } from '@/Utils'
+import { sendResp } from '@/Utils'
 
 /**
  * @route POST /user
@@ -26,11 +27,8 @@ export async function createUser(req, res, next) {
 export async function getUserById(req, res, next) {
   const id = req.params.id
   const user = await User.findOne({ _id: id, delete: false }).exec()
-  if (user) {
-    sendResp(res, user)
-  } else {
-    sendErrorResp(res, 404, 'Not Found')
-  }
+  assert.ok(!!user, 'Not Found')
+  sendResp(res, user)
 }
 
 /**

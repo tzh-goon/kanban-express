@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express-promise-router'
 import { getAllUser, getUserById, createUser, updateUser, deleteUser } from '@/Controllers'
 
 const router = Router()

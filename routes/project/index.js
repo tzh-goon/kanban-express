@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express-promise-router'
 import userRouter from './user'
 import usersRouter from './users'
 import loginRouter from './login'

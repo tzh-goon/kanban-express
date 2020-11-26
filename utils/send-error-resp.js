@@ -1,4 +1,4 @@
-export function sendErrorResp(res, status, errcode = '0', errmsg = 'ok', data = null) {
+export function sendErrorResp(res, status, errcode, errmsg, data) {
   res.status(status).json({ errcode, errmsg, data })
 }
 

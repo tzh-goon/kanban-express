@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express-promise-router'
 import { getTaskById, createTask, updateTask, deleteTask } from '../../controllers'
 
 const router = Router()

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express-promise-router'
 import { tokenSupplyHandler } from '@/Utils'
 import userRouter from './user'
 
