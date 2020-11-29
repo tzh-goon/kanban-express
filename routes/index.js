@@ -1,11 +1,7 @@
-import Router from 'express-promise-router'
 import { tokenSupplyHandler } from '@/Utils'
 import userRouter from './user'
+import projectRouter from './project'
 
 export default function (app) {
-  const router = Router()
-  router.use(tokenSupplyHandler)
-  router.use(userRouter)
-
-  app.use('/services', router)
+  app.use('/services', [tokenSupplyHandler, userRouter, projectRouter])
 }

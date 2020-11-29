@@ -2,11 +2,11 @@ import assert from 'assert'
 import { Task, Category } from '@/Models'
 import { sendResp } from '@/Utils'
 
-function addTaskToCategory(taskId, categoryId) {
+export function addTaskToCategory(categoryId, taskIds) {
   return Category.updateOne(
     { _id: categoryId },
     {
-      $push: { tasks: { $each: [taskId], $position: 0 } }
+      $push: { tasks: { $each: taskIds, $position: 0 } }
     }
   ).exec()
 }
@@ -25,7 +25,7 @@ export async function createTask(req, res, next) {
   assert.ok(!!fields.project, 'project 不能为空')
   assert.ok(!!fields.category, 'category 不能为空')
   const task = await Task.create(fields)
-  await addTaskToCategory(task.id, task.category)
+  await addTaskToCategory(task.category, [task.id])
   sendResp(res, task)
 }
 

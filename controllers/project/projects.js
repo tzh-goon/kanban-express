@@ -1,5 +1,6 @@
 import { Category, Project, Task } from '@/Models'
 import { sendResp } from '@/Utils'
+import { initProject } from './init'
 
 export async function createProject(req, res, next) {
   const fields = req.body
@@ -20,9 +21,12 @@ export async function updateProject(req, res, next) {
   sendResp(res, project)
 }
 
-export async function getProjectByUserId(req, res, next) {
-  const ownerId = req.user.id
-  const project = await Project.findOne({ ownerId }) //
+export async function getMyProject(req, res, next) {
+  const userId = req.user.id
+  // 初始化项目
+  await initProject(userId)
+  // 查询项目
+  const project = await Project.findOne({ owner: userId, delete: false }) //
     .populate({
       path: 'categories',
       populate: {

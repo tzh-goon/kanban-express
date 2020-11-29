@@ -1,15 +1,17 @@
 import { Schema, model } from 'mongoose'
 
 const taskScheme = new Schema({
-  title: String,
-  description: String,
-  priority: String,
-  beginTime: Date,
-  endTime: Date,
-  delete: Boolean,
+  title: { type: String, default: '' },
+  description: { type: String, default: null },
+  priority: { type: String, default: null },
+  beginTime: { type: Date, default: null },
+  endTime: { type: Date, default: null },
+  finish: { type: Boolean, default: false },
+  finishTime: { type: Date, default: null },
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  delete: { type: Boolean, default: false },
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })

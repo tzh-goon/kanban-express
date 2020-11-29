@@ -1,13 +1,12 @@
 import { Schema, model } from 'mongoose'
 
 const shema = new Schema({
-  title: String,
-  description: String,
-  type: String,
-  delete: Boolean,
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  delete: { type: Boolean, default: false },
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })

@@ -1,11 +1,11 @@
 import Router from 'express-promise-router'
-import userRouter from './user'
-import usersRouter from './users'
-import loginRouter from './login'
+import projectRouter from './projects'
+import categoryRouter from './categories'
+import taskRouter from './tasks'
 
 const router = Router()
-router.use('/user', userRouter)
-router.use('/users', usersRouter)
-router.use('/login', loginRouter)
+router.use('/', projectRouter)
+router.use('/', categoryRouter)
+router.use('/', taskRouter)
 
 export default router
