@@ -1,5 +1,6 @@
 module.exports = {
   PORT: parseInt(process.env.PORT, 10) || 8001,
+  MONGODB_URL: 'mongodb://superuser:qwer1234@39.99.175.151:27017/kanban_dev',
   SWAGGER_HOST: 'localhost:8002',
   JWT_SECRET: 'hao123',
   JWT_EXPIRES: 30 * 24 * 60 * 60,
