@@ -48,3 +48,13 @@ export async function updateTask(req, res, next) {
   const task = await Task.findByIdAndUpdate(id, fields, { new: true }).exec()
   sendResp(res, task)
 }
+
+export async function getProjectCategoryTasks(req, res, next) {
+  const { projectId, categoryId } = req.params
+  const { page, offset, limit } = req.query
+  const result = await Task.paginate(
+    { project: projectId, category: categoryId, delete: false },
+    { page, offset, limit }
+  )
+  sendResp(res, result)
+}

@@ -1,8 +1,9 @@
 import express, { json, urlencoded } from 'express'
-import logger from 'morgan'
-import compression from 'compression'
 import expressJwt from 'express-jwt'
+import swStats from 'swagger-stats'
 import expressSwaggerGenerator from 'express-swagger-generator'
+import compression from 'compression'
+import logger from 'morgan'
 import CreateHttpError from 'http-errors'
 import dbConnect from './mongodb/index'
 import router from '@/Routes'
@@ -40,6 +41,8 @@ const swaggerOptions = {
   files: ['./models/**/*.js', './controllers/**/*.js'] // Path to the API handle folder
 }
 expressSwaggerGenerator(app)(swaggerOptions)
+
+app.use(swStats.getMiddleware({}))
 
 app.use(json())
 app.use(urlencoded({ extended: false }))

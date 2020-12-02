@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
-const projectScheme = new Schema({
+const schema = new Schema({
   title: { type: String, default: '' },
   description: { type: String, default: '' },
   imageUrl: { type: String, default: null },
@@ -10,4 +11,7 @@ const projectScheme = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-export const Project = model('Project', projectScheme)
+
+schema.plugin(mongoosePaginate)
+
+export const Project = model('Project', schema)

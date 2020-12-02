@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
-const shema = new Schema({
+const schema = new Schema({
   title: { type: String, default: '' },
   description: { type: String, default: '' },
   tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
@@ -10,4 +11,7 @@ const shema = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-export const Category = model('Category', shema)
+
+schema.plugin(mongoosePaginate)
+
+export const Category = model('Category', schema)

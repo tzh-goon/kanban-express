@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
-const taskScheme = new Schema({
+const schema = new Schema({
   title: { type: String, default: '' },
   description: { type: String, default: null },
   priority: { type: String, default: null },
@@ -15,4 +16,7 @@ const taskScheme = new Schema({
   updateTime: { type: Date, default: Date.now },
   createTime: { type: Date, default: Date.now }
 })
-export const Task = model('Task', taskScheme)
+
+schema.plugin(mongoosePaginate)
+
+export const Task = model('Task', schema)
