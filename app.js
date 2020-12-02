@@ -53,7 +53,7 @@ app.use(
     secret: config.JWT_SECRET,
     algorithms: ['HS256']
   }).unless({
-    path: [/\/services\/login/, /\/api-docs/]
+    path: [/\/services\/login/, /\/api-docs/, /\/swagger-stats/]
   })
 )
 
