@@ -21,6 +21,8 @@ export async function loginByWechatMiniProgram(req, res, next) {
   const response = await got.get(jscodeUrl, { responseType: 'json' })
   const { session_key: sessionKey, openid: openId } = response.body
 
+  assert.ok(!!openId, 'openId 未查询到')
+
   // openId => UserAuth
   let userAuth = await UserAuth.findOne({
     identifier: openId,
