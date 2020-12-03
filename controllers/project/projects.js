@@ -27,8 +27,24 @@ export async function getMyProject(req, res, next) {
   await initProject(userId)
   // 查询项目
   const project = await Project.findOne({ owner: userId, delete: false }) //
+    .orFail()
     .populate({
       path: 'categories',
+      select: '_id title'
+    })
+  sendResp(res, project)
+}
+
+export async function getMyProjectAll(req, res, next) {
+  const userId = req.user.id
+  // 初始化项目
+  await initProject(userId)
+  // 查询项目
+  const project = await Project.findOne({ owner: userId, delete: false }) //
+    .orFail()
+    .populate({
+      path: 'categories',
+      select: '_id title',
       populate: {
         path: 'tasks'
       }

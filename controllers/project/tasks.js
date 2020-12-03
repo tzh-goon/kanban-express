@@ -49,12 +49,18 @@ export async function updateTask(req, res, next) {
   sendResp(res, task)
 }
 
-export async function getProjectCategoryTasks(req, res, next) {
+export async function getProjectCategoryTasksPage(req, res, next) {
   const { projectId, categoryId } = req.params
   const { page, offset, limit } = req.query
   const result = await Task.paginate(
     { project: projectId, category: categoryId, delete: false },
     { page, offset, limit }
   )
+  sendResp(res, result)
+}
+
+export async function getProjectCategoryTasksAll(req, res, next) {
+  const { projectId, categoryId } = req.params
+  const result = await Task.find({ project: projectId, category: categoryId, delete: false }).exec()
   sendResp(res, result)
 }
