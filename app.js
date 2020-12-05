@@ -57,14 +57,28 @@ app.use(
   })
 )
 
-router(app)
+app.all('*', (req, res, next) => {
+  const { origin, Origin, referer, Referer } = req.headers
+  const allowOrigin = origin || Origin || referer || Referer || '*'
+  res.header('Access-Control-Allow-Origin', allowOrigin)
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
+  // 可以带cookies
+  res.header('Access-Control-Allow-Credentials', true)
+  res.header('X-Powered-By', 'Express')
+  // no cache
+  res.header('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.header('Pragma', 'no-cache')
+  res.header('Expires', '0')
 
-app.use(function (req, res, next) {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-  res.setHeader('Pragma', 'no-cache')
-  res.setHeader('Expires', '0')
-  next()
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  }
 })
+
+router(app)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

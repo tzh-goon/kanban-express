@@ -1,51 +1,60 @@
-import assert from 'assert'
 import { Task, Category } from '@/Models'
 import { sendResp } from '@/Utils'
 
-export function addTaskToCategory(categoryId, taskIds) {
-  return Category.updateOne(
-    { _id: categoryId },
-    {
-      $push: { tasks: { $each: taskIds, $position: 0 } }
-    }
-  ).exec()
+export function addTaskToCategory(categoryId, taskIds, index = 0) {
+  return Category.updateOne({ _id: categoryId }, { $push: { tasks: { $each: taskIds, $position: index } } }).exec()
 }
 
-function removeTaskFromCategory(taskId, categoryId) {
-  return Category.updateOne(
-    { _id: categoryId },
-    {
-      $pull: { tasks: taskId }
-    }
-  ).exec()
+function removeTaskFromCategory(categoryId, taskId) {
+  return Category.updateOne({ _id: categoryId }, { $pull: { tasks: taskId } }).exec()
 }
 
 export async function createTask(req, res, next) {
+  const { projectId, categoryId } = req.params
+  const owner = req.user.id
   const fields = req.body
-  assert.ok(!!fields.project, 'project 不能为空')
-  assert.ok(!!fields.category, 'category 不能为空')
-  const task = await Task.create(fields)
-  await addTaskToCategory(task.category, [task.id])
+  const task = await Task.create({
+    ...fields,
+    project: projectId,
+    category: categoryId,
+    owner
+  })
+  await addTaskToCategory(categoryId, [task.id])
   sendResp(res, task)
 }
 
 export async function deleteTask(req, res, next) {
   const id = req.params.id
   const task = await Task.updateOne({ _id: id }, { delete: true })
-  await removeTaskFromCategory(id, task.category)
+  if (task) {
+    // 从分组中移除
+    await removeTaskFromCategory(task.category, id)
+  }
   sendResp(res, null)
 }
 
 export async function getTaskById(req, res, next) {
-  const id = req.params.id
-  const task = await Task.findById(id).exec()
+  const { id } = req.params
+  const task = await Task.findOne({ _id: id, delete: false }).orFail().exec()
+  sendResp(res, task)
+}
+
+export async function getProjectCaregoryTaskById(req, res, next) {
+  const { projectId, categoryId, id } = req.params
+  const task = await Task.findOne({ _id: id, project: projectId, category: categoryId, delete: false }).orFail().exec()
   sendResp(res, task)
 }
 
 export async function updateTask(req, res, next) {
-  const id = req.params.id
+  const { projectId, categoryId, id } = req.params
   const fields = req.body
-  const task = await Task.findByIdAndUpdate(id, fields, { new: true }).exec()
+  const task = await Task.findOneAndUpdate(
+    { _id: id, project: projectId, category: categoryId, delete: false },
+    fields,
+    { new: true }
+  )
+    .orFail()
+    .exec()
   sendResp(res, task)
 }
 
