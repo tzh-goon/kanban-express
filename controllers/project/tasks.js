@@ -58,6 +58,30 @@ export async function updateTask(req, res, next) {
   sendResp(res, task)
 }
 
+export async function finishTask(req, res, next) {
+  const { projectId, categoryId, id } = req.params
+  const task = await Task.findOneAndUpdate(
+    { _id: id, project: projectId, category: categoryId, delete: false },
+    { finish: true, finishTime: Date.now() },
+    { new: true }
+  )
+    .orFail()
+    .exec()
+  sendResp(res, task)
+}
+
+export async function undoTask(req, res, next) {
+  const { projectId, categoryId, id } = req.params
+  const task = await Task.findOneAndUpdate(
+    { _id: id, project: projectId, category: categoryId, delete: false },
+    { finish: false, finishTime: null },
+    { new: true }
+  )
+    .orFail()
+    .exec()
+  sendResp(res, task)
+}
+
 export async function getProjectCategoryTasksPage(req, res, next) {
   const { projectId, categoryId } = req.params
   const { page, offset, limit } = req.query
