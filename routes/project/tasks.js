@@ -22,6 +22,7 @@ router.post('/project/:projectId/category/:categoryId/task', createTask)
 router.get('/project/:projectId/category/:categoryId/task/:id', getProjectCaregoryTaskById)
 router.put('/project/:projectId/category/:categoryId/task/:id', updateTask)
 router.delete('/project/:projectId/category/:categoryId/task/:id', deleteTask)
+
 router.post('/project/:projectId/category/:categoryId/task/:id/finish', finishTask)
 router.post('/project/:projectId/category/:categoryId/task/:id/undo', undoTask)
 

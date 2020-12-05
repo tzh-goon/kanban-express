@@ -38,13 +38,17 @@ export async function deleteTask(req, res, next) {
 
 export async function getTaskById(req, res, next) {
   const { id } = req.params
-  const task = await Task.findOne({ _id: id, delete: false }).orFail().exec()
+  const task = await Task.findOne({ _id: id, delete: false }) //
+    .orFail(new Error('Task not Found'))
+    .exec()
   sendResp(res, task)
 }
 
 export async function getProjectCaregoryTaskById(req, res, next) {
   const { projectId, categoryId, id } = req.params
-  const task = await Task.findOne({ _id: id, project: projectId, category: categoryId, delete: false }).orFail().exec()
+  const task = await Task.findOne({ _id: id, project: projectId, category: categoryId, delete: false })
+    .orFail(new Error('Task not Found'))
+    .exec()
   sendResp(res, task)
 }
 
@@ -56,7 +60,7 @@ export async function updateTask(req, res, next) {
     { ...fields, updateTime: Date.now() },
     { new: true }
   )
-    .orFail()
+    .orFail(new Error('Task not Found'))
     .exec()
   sendResp(res, task)
 }
@@ -68,8 +72,16 @@ export async function finishTask(req, res, next) {
     { finish: true, finishTime: Date.now(), updateTime: Date.now() },
     { new: true }
   )
-    .orFail()
+    .orFail(new Error('Task not Found'))
     .exec()
+
+  // 完成任务时，移动到分组下第一个已完成之前
+  const category = await getProjectCategoryTasksWithFinishState(projectId, categoryId)
+  const finishedIndex = category.tasks.findIndex(e => !!e.finish)
+  const insertIndex = finishedIndex >= 0 ? finishedIndex : category.tasks.length
+  await Category.updateOne({ _id: categoryId }, { $pull: { tasks: id } }).exec()
+  await Category.updateOne({ _id: categoryId }, { $push: { tasks: { $each: [id], $position: insertIndex } } }).exec()
+
   sendResp(res, task)
 }
 
@@ -80,8 +92,13 @@ export async function undoTask(req, res, next) {
     { finish: false, finishTime: null, updateTime: Date.now() },
     { new: true }
   )
-    .orFail()
+    .orFail(new Error('Task not Found'))
     .exec()
+
+  // 重做任务时，移到分组下第一个
+  await Category.updateOne({ _id: categoryId }, { $pull: { tasks: id } }).exec()
+  await Category.updateOne({ _id: categoryId }, { $push: { tasks: { $each: [id], $position: 0 } } }).exec()
+
   sendResp(res, task)
 }
 
@@ -99,4 +116,24 @@ export async function getProjectCategoryTasksAll(req, res, next) {
   const { projectId, categoryId } = req.params
   const result = await Task.find({ project: projectId, category: categoryId, delete: false }).exec()
   sendResp(res, result)
+}
+
+export function getProjectCategoryTasksWithFinishState(projectId, categoryId) {
+  return Category.findOne({ _id: categoryId, project: projectId })
+    .orFail(new Error('Category Not Found'))
+    .populate({
+      path: 'tasks',
+      select: '_id finish'
+    })
+    .exec()
+}
+
+export async function setProjectCategoryTasksOrder(projectId, categoryId) {
+  const category = await getProjectCategoryTasksWithFinishState(projectId, categoryId)
+  const tasks = category.tasks
+  // 分类排序
+  const unfinishedIds = tasks.filter(e => !e.finish).map(e => e._id)
+  const finishedIds = tasks.filter(e => e.finish).map(e => e._id)
+  const newIds = [...unfinishedIds, ...finishedIds]
+  await Category.updateOne({ _id: categoryId }, { tasks: newIds }).exec()
 }
