@@ -24,8 +24,11 @@ export async function createTask(req, res, next) {
 }
 
 export async function deleteTask(req, res, next) {
-  const id = req.params.id
-  const task = await Task.updateOne({ _id: id }, { delete: true })
+  const { projectId, categoryId, id } = req.params
+  const task = await Task.updateOne(
+    { _id: id, project: projectId, category: categoryId },
+    { delete: true, updateTime: Date.now() }
+  )
   if (task) {
     // 从分组中移除
     await removeTaskFromCategory(task.category, id)
@@ -50,7 +53,7 @@ export async function updateTask(req, res, next) {
   const fields = req.body
   const task = await Task.findOneAndUpdate(
     { _id: id, project: projectId, category: categoryId, delete: false },
-    fields,
+    { ...fields, updateTime: Date.now() },
     { new: true }
   )
     .orFail()
@@ -62,7 +65,7 @@ export async function finishTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const task = await Task.findOneAndUpdate(
     { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: true, finishTime: Date.now() },
+    { finish: true, finishTime: Date.now(), updateTime: Date.now() },
     { new: true }
   )
     .orFail()
@@ -74,7 +77,7 @@ export async function undoTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const task = await Task.findOneAndUpdate(
     { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: false, finishTime: null },
+    { finish: false, finishTime: null, updateTime: Date.now() },
     { new: true }
   )
     .orFail()

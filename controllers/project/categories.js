@@ -10,7 +10,7 @@ export function addCategoryToProject(projectId, categoryIds, index = 0) {
 }
 
 export function removeCategoryFromProject(projectId, categoryId) {
-  return Project.updateOne({ _id: projectId }, { $pull: { categories: categoryId } }).orFail().exec()
+  return Project.updateOne({ _id: projectId }, { $pull: { categories: categoryId } }).exec()
 }
 
 export async function createCategory(req, res, next) {
@@ -34,14 +34,23 @@ export async function getCategoryById(req, res, next) {
 export async function updateCategory(req, res, next) {
   const id = req.params.id
   const fields = req.body
-  const category = await Category.findOneAndUpdate({ _id: id, delete: false }, fields, { new: true }).orFail().exec()
+  const category = await Category.findOneAndUpdate(
+    { _id: id, delete: false },
+    { ...fields, updateTime: Date.now() },
+    { new: true }
+  )
+    .orFail()
+    .exec()
   sendResp(res, category)
 }
 
 export async function deleteCategory(req, res, next) {
   const { projectId, id } = req.params
   // 删除分类，不会清空所属关系
-  const category = await Category.updateOne({ _id: id, project: projectId }, { delete: true }).exec()
+  const category = await Category.updateOne(
+    { _id: id, project: projectId },
+    { delete: true, updateTime: Date.now() }
+  ).exec()
   if (category) {
     // 从项目中移除
     await removeCategoryFromProject(projectId, id)
@@ -49,4 +58,11 @@ export async function deleteCategory(req, res, next) {
     await Task.update({ _id: { $in: category.tasks } }, { delete: true })
   }
   sendResp(res, null)
+}
+
+export async function orderCategory(req, res, next) {
+  const { projectId } = req.params
+  const ids = req.body
+  await Project.updateOne({ _id: projectId, delete: false }, { categories: ids }).orFail().exec()
+  sendResp(res, true)
 }
