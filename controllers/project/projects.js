@@ -2,9 +2,14 @@ import { Category, Project, Task } from '@/Models'
 import { sendResp } from '@/Utils'
 import { initProject } from './init'
 
+export async function ensureProjectExisted(projectId) {
+  await Project.findOne({ _id: projectId, delete: false }).orFail(new Error('Project Not found'))
+}
+
 export async function createProject(req, res, next) {
+  const owner = req.user.id
   const fields = req.body
-  const project = await Project.create(fields)
+  const project = await Project.create({ ...fields, owner })
   sendResp(res, project)
 }
 
@@ -36,11 +41,11 @@ export async function getMyProject(req, res, next) {
 }
 
 export async function getMyProjectAll(req, res, next) {
-  const userId = req.user.id
+  const owner = req.user.id
   // 初始化项目
-  await initProject(userId)
+  await initProject(owner)
   // 查询项目
-  const project = await Project.findOne({ owner: userId, delete: false }) //
+  const project = await Project.findOne({ owner, delete: false }) //
     .orFail()
     .populate({
       path: 'categories',
