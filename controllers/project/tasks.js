@@ -1,5 +1,6 @@
 import { Task, Category } from '@/Models'
 import { sendResp } from '@/Utils'
+import _ from 'lodash'
 
 export function addTaskToCategory(categoryId, taskIds, index = 0) {
   return Category.updateOne({ _id: categoryId }, { $push: { tasks: { $each: taskIds, $position: index } } }).exec()
@@ -77,8 +78,7 @@ export async function finishTask(req, res, next) {
 
   // 完成任务时，移动到分组下第一个已完成之前
   const category = await getProjectCategoryTasksWithFinishState(projectId, categoryId)
-  const finishedIndex = category.tasks.findIndex(e => !!e.finish)
-  const insertIndex = finishedIndex >= 0 ? finishedIndex : category.tasks.length
+  const insertIndex = _.findLastIndex(category.tasks, e => !e.finish) + 1
   await Category.updateOne({ _id: categoryId }, { $pull: { tasks: id } }).exec()
   await Category.updateOne({ _id: categoryId }, { $push: { tasks: { $each: [id], $position: insertIndex } } }).exec()
 
