@@ -34,23 +34,14 @@ export async function getCategoryById(req, res, next) {
 export async function updateCategory(req, res, next) {
   const id = req.params.id
   const fields = req.body
-  const category = await Category.findOneAndUpdate(
-    { _id: id, delete: false },
-    { ...fields, updateTime: Date.now() },
-    { new: true }
-  )
-    .orFail()
-    .exec()
+  const category = await Category.findOneAndUpdate({ _id: id }, fields, { new: true }).orFail().exec()
   sendResp(res, category)
 }
 
 export async function deleteCategory(req, res, next) {
   const { projectId, id } = req.params
   // 删除分类，不会清空所属关系
-  const category = await Category.updateOne(
-    { _id: id, project: projectId },
-    { delete: true, updateTime: Date.now() }
-  ).exec()
+  const category = await Category.updateOne({ _id: id, project: projectId }, { delete: true }).exec()
   if (category) {
     // 从项目中移除
     await removeCategoryFromProject(projectId, id)

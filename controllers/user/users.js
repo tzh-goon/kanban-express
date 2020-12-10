@@ -41,7 +41,7 @@ export async function getUserById(req, res, next) {
  */
 export async function updateUser(req, res, next) {
   const id = req.params.id
-  const fields = { ...req.body, updateTime: Date.now() }
+  const fields = req.body
   const user = await User.findByIdAndUpdate(id, fields, { new: true }).exec()
   sendResp(res, user)
 }
@@ -56,8 +56,7 @@ export async function updateUser(req, res, next) {
  */
 export async function deleteUser(req, res, next) {
   const id = req.params.id
-  const fields = { delete: true, updateTime: Date.now() }
-  await User.findByIdAndUpdate(id, fields, { new: true }).exec()
+  await User.findByIdAndUpdate(id, { delete: true }, { new: true }).exec()
   sendResp(res, null)
 }
 

@@ -26,10 +26,7 @@ export async function createTask(req, res, next) {
 
 export async function deleteTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
-  const task = await Task.updateOne(
-    { _id: id, project: projectId, category: categoryId },
-    { delete: true, updateTime: Date.now() }
-  )
+  const task = await Task.updateOne({ _id: id, project: projectId, category: categoryId }, { delete: true })
   if (task) {
     // 从分组中移除
     await removeTaskFromCategory(task.category, id)
@@ -56,11 +53,7 @@ export async function getProjectCaregoryTaskById(req, res, next) {
 export async function updateTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const fields = req.body
-  const task = await Task.findOneAndUpdate(
-    { _id: id, project: projectId, category: categoryId, delete: false },
-    { ...fields, updateTime: Date.now() },
-    { new: true }
-  )
+  const task = await Task.findOneAndUpdate({ _id: id, project: projectId, category: categoryId }, fields, { new: true })
     .orFail(new Error('Task not Found'))
     .exec()
   sendResp(res, task)
@@ -70,7 +63,7 @@ export async function finishTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const task = await Task.findOneAndUpdate(
     { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: true, finishTime: Date.now(), updateTime: Date.now() },
+    { finish: true, finishTime: Date.now() },
     { new: true }
   )
     .orFail(new Error('Task not Found'))
@@ -89,7 +82,7 @@ export async function undoTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const task = await Task.findOneAndUpdate(
     { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: false, finishTime: null, updateTime: Date.now() },
+    { finish: false, finishTime: null },
     { new: true }
   )
     .orFail(new Error('Task not Found'))
