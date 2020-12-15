@@ -42,14 +42,6 @@ export async function getTaskById(req, res, next) {
   sendResp(res, task)
 }
 
-export async function getProjectCaregoryTaskById(req, res, next) {
-  const { projectId, categoryId, id } = req.params
-  const task = await Task.findOne({ _id: id, project: projectId, category: categoryId, delete: false })
-    .orFail(new Error('Task not Found'))
-    .exec()
-  sendResp(res, task)
-}
-
 export async function updateTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
   const fields = req.body
@@ -61,15 +53,9 @@ export async function updateTask(req, res, next) {
 
 export async function finishTask(req, res, next) {
   const { projectId, categoryId, id } = req.params
-  const task = await Task.findOneAndUpdate(
-    { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: true, finishTime: Date.now() },
-    { new: true }
-  )
-    .orFail(new Error('Task not Found'))
-    .exec()
+  const task = await Task.findOneAndUpdate({ _id: id }, { finish: true, finishTime: Date.now() }, { new: true }).exec()
 
-  // 完成任务时，移动到分组下第一个已完成之前
+  // 完成任务时，移动到分组下最后一个未完成的位置
   const category = await getProjectCategoryTasksWithFinishState(projectId, categoryId)
   const insertIndex = _.findLastIndex(category.tasks, e => !e.finish) + 1
   await Category.updateOne({ _id: categoryId }, { $pull: { tasks: id } }).exec()
@@ -79,14 +65,8 @@ export async function finishTask(req, res, next) {
 }
 
 export async function undoTask(req, res, next) {
-  const { projectId, categoryId, id } = req.params
-  const task = await Task.findOneAndUpdate(
-    { _id: id, project: projectId, category: categoryId, delete: false },
-    { finish: false, finishTime: null },
-    { new: true }
-  )
-    .orFail(new Error('Task not Found'))
-    .exec()
+  const { categoryId, id } = req.params
+  const task = await Task.findOneAndUpdate({ _id: id }, { finish: false, finishTime: null }, { new: true }).exec()
 
   // 重做任务时，移到分组下第一个
   await Category.updateOne({ _id: categoryId }, { $pull: { tasks: id } }).exec()

@@ -6,7 +6,6 @@ import {
   deleteTask,
   finishTask,
   undoTask,
-  getProjectCaregoryTaskById,
   getProjectCategoryTasksPage,
   getProjectCategoryTasksAll
 } from '../../controllers'
@@ -19,7 +18,7 @@ router.get('/task/:id', getTaskById)
 // router.delete('/task/:id', deleteTask)
 
 router.post('/project/:projectId/category/:categoryId/task', createTask)
-router.get('/project/:projectId/category/:categoryId/task/:id', getProjectCaregoryTaskById)
+router.get('/project/:projectId/category/:categoryId/task/:id', getTaskById)
 router.put('/project/:projectId/category/:categoryId/task/:id', updateTask)
 router.delete('/project/:projectId/category/:categoryId/task/:id', deleteTask)
 
